@@ -2,34 +2,42 @@
 
 // https://leetcode.com/problems/trapping-rain-water/
 
-// TODO: this runs in O(n^2) time, make it O(n)
 pub fn trapped_water(height: Vec<i32>) -> i32 {
-    let mut _max_l = 0;
     let mut total_water = 0;
     let length = height.len();
 
+    // no water possible if 2 or less items
     if length <= 2 {
         return total_water;
     }
 
-    for i in 1..height.len() - 1 {
-        if height[i - 1] > _max_l {
-            _max_l = height[i - 1]
-        }
+    let mut l_idx = 0;
+    let mut r_idx = length - 1;
+    let mut pointer_idx = l_idx;
 
-        let mut j = i + 1;
-        let mut _max_r = 0;
-        while j < height.len() {
-            if height[j] > _max_r {
-                _max_r = height[j]
-            }
-            j += 1;
-        }
+    let mut l_max = height[l_idx];
+    let mut r_max = height[r_idx];
 
-        let current_height = std::cmp::min(_max_l, _max_r) - height[i];
+    while l_idx < r_idx {
+        let current_height: i32 = std::cmp::min(l_max, r_max) - height[pointer_idx];
+
+        if height[l_idx] > l_max {
+            l_max = height[l_idx]
+        }
+        if height[r_idx] > r_max {
+            r_max = height[r_idx]
+        }
 
         if current_height > 0 {
             total_water += current_height;
+        }
+
+        if l_max < r_max {
+            l_idx += 1;
+            pointer_idx = l_idx
+        } else {
+            r_idx -= 1;
+            pointer_idx = r_idx
         }
     }
 
